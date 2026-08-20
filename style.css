@@ -1,0 +1,121 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #1a1a2e;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  user-select: none;
+  color: #fff;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+p {
+  margin-bottom: 15px;
+  color: #a0a0b0;
+}
+
+#game-container {
+  width: 600px;
+  height: 220px;
+  border-bottom: 6px solid #111;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+}
+
+#background-city {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="220" viewBox="0 0 600 220"><rect width="600" height="90" fill="%2364b5f6"/><rect y="60" width="80" height="30" fill="%23b0bec5"/><rect x="100" y="40" width="70" height="50" fill="%23cfd8dc"/><rect x="190" y="50" width="90" height="40" fill="%2390a4ae"/><rect x="300" y="30" width="80" height="60" fill="%23eceff1"/><rect x="400" y="50" width="60" height="40" fill="%23b0bec5"/><rect x="480" y="35" width="100" height="55" fill="%23cfd8dc"/><line x1="0" y1="90" x2="600" y2="90" stroke="%2337474f" stroke-width="3"/><rect y="90" width="600" height="85" fill="%23546e7a"/><path d="M 30 110 Q 50 140 80 120 T 130 150" stroke="%2390caf9" stroke-width="4" fill="none"/><path d="M 160 125 C 190 100 220 160 260 130" stroke="%23e0e0e0" stroke-width="8" fill="none" opacity="0.6"/><path d="M 300 115 Q 340 150 390 120" stroke="%2390caf9" stroke-width="5" fill="none"/><path d="M 420 130 Q 460 100 510 140" stroke="%23e0e0e0" stroke-width="6" fill="none" opacity="0.6"/><rect y="175" width="600" height="45" fill="%23263238"/><line x1="0" y1="200" x2="600" y2="200" stroke="%23ffffff" stroke-width="3" stroke-dasharray="40 30"/><line x1="50" y1="90" x2="50" y2="175" stroke="%23212121" stroke-width="4"/><path d="M 35 90 L 50 100 L 65 90" stroke="%23212121" stroke-width="3" fill="none"/><line x1="400" y1="90" x2="400" y2="175" stroke="%23212121" stroke-width="4"/><path d="M 385 90 L 400 100 L 415 90" stroke="%23212121" stroke-width="3" fill="none"/></svg>');
+  background-repeat: repeat-x;
+  background-size: 600px 220px;
+  background-position: left bottom;
+  z-index: 1;
+}
+
+#player {
+  width: 45px;
+  height: 60px;
+  position: absolute;
+  bottom: 12px;
+  left: 50px;
+  z-index: 2;
+}
+
+/* Animação de Remada no chão */
+.pushing .leg-push {
+  animation: pushLeg 0.6s infinite ease-in-out;
+  transform-origin: 36px 80px;
+}
+
+@keyframes pushLeg {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(-35deg) translateY(5px); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Animação de Flip no Skate ao pular */
+.jumping .skate-deck {
+  animation: flipSkate 0.6s ease-in-out;
+  transform-origin: 48px 117px;
+}
+
+@keyframes flipSkate {
+  0% { transform: rotateX(0deg); }
+  100% { transform: rotateX(360deg); }
+}
+
+.obstacle {
+  position: absolute;
+  bottom: 12px;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.bird {
+  position: absolute;
+  top: 25px;
+  width: 30px;
+  height: 20px;
+  z-index: 2;
+}
+
+#score-board {
+  margin-top: 15px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#game-over-screen {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  z-index: 10;
+  font-weight: bold;
+}
