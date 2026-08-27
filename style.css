@@ -14,6 +14,7 @@ body {
   min-height: 100vh;
   user-select: none;
   color: #fff;
+  overflow: hidden;
 }
 
 h1 {
@@ -25,6 +26,10 @@ p {
   color: #a0a0b0;
 }
 
+/* ===============================
+   ÁREA DO JOGO
+   =============================== */
+
 #game-container {
   width: 600px;
   height: 220px;
@@ -32,90 +37,230 @@ p {
   position: relative;
   overflow: hidden;
   border-radius: 8px 8px 0 0;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.7);
+
+  touch-action: none;
 }
+
+/* ===============================
+   CIDADE / FUNDO
+   =============================== */
 
 #background-city {
   position: absolute;
   top: 0;
   left: 0;
+
   width: 100%;
   height: 100%;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="220" viewBox="0 0 600 220"><rect width="600" height="90" fill="%2364b5f6"/><rect y="60" width="80" height="30" fill="%23b0bec5"/><rect x="100" y="40" width="70" height="50" fill="%23cfd8dc"/><rect x="190" y="50" width="90" height="40" fill="%2390a4ae"/><rect x="300" y="30" width="80" height="60" fill="%23eceff1"/><rect x="400" y="50" width="60" height="40" fill="%23b0bec5"/><rect x="480" y="35" width="100" height="55" fill="%23cfd8dc"/><line x1="0" y1="90" x2="600" y2="90" stroke="%2337474f" stroke-width="3"/><rect y="90" width="600" height="85" fill="%23546e7a"/><path d="M 30 110 Q 50 140 80 120 T 130 150" stroke="%2390caf9" stroke-width="4" fill="none"/><path d="M 160 125 C 190 100 220 160 260 130" stroke="%23e0e0e0" stroke-width="8" fill="none" opacity="0.6"/><path d="M 300 115 Q 340 150 390 120" stroke="%2390caf9" stroke-width="5" fill="none"/><path d="M 420 130 Q 460 100 510 140" stroke="%23e0e0e0" stroke-width="6" fill="none" opacity="0.6"/><rect y="175" width="600" height="45" fill="%23263238"/><line x1="0" y1="200" x2="600" y2="200" stroke="%23ffffff" stroke-width="3" stroke-dasharray="40 30"/><line x1="50" y1="90" x2="50" y2="175" stroke="%23212121" stroke-width="4"/><path d="M 35 90 L 50 100 L 65 90" stroke="%23212121" stroke-width="3" fill="none"/><line x1="400" y1="90" x2="400" y2="175" stroke="%23212121" stroke-width="4"/><path d="M 385 90 L 400 100 L 415 90" stroke="%23212121" stroke-width="3" fill="none"/></svg>');
+
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="220" viewBox="0 0 600 220"><rect width="600" height="90" fill="%2364b5f6"/><rect y="60" width="80" height="30" fill="%23b0bec5"/><rect x="100" y="40" width="70" height="50" fill="%23cfd8dc"/><rect x="190" y="50" width="90" height="40" fill="%2390a4ae"/><rect x="300" y="30" width="80" height="60" fill="%23eceff1"/><rect x="400" y="50" width="60" height="40" fill="%23b0bec5"/><rect x="480" y="35" width="100" height="55" fill="%23cfd8dc"/><line x1="0" y1="90" x2="600" y2="90" stroke="%2337474f" stroke-width="3"/><rect y="90" width="600" height="85" fill="%23546e7a"/><path d="M30 110 Q50 140 80 120 T130 150" stroke="%2390caf9" stroke-width="4" fill="none"/><path d="M160 125 C190 100 220 160 260 130" stroke="%23e0e0e0" stroke-width="8" fill="none" opacity="0.6"/><path d="M300 115 Q340 150 390 120" stroke="%2390caf9" stroke-width="5" fill="none"/><path d="M420 130 Q460 100 510 140" stroke="%23e0e0e0" stroke-width="6" fill="none" opacity="0.6"/><rect y="175" width="600" height="45" fill="%23263238"/><line x1="0" y1="200" x2="600" y2="200" stroke="%23ffffff" stroke-width="3" stroke-dasharray="40 30"/><line x1="50" y1="90" x2="50" y2="175" stroke="%23212121" stroke-width="4"/><path d="M35 90 L50 100 L65 90" stroke="%23212121" stroke-width="3" fill="none"/><line x1="400" y1="90" x2="400" y2="175" stroke="%23212121" stroke-width="4"/><path d="M385 90 L400 100 L415 90" stroke="%23212121" stroke-width="3" fill="none"/></svg>');
+
   background-repeat: repeat-x;
   background-size: 600px 220px;
   background-position: left bottom;
+
   z-index: 1;
+
+  pointer-events: none;
 }
+
+/* ===============================
+   JOGADOR
+   =============================== */
 
 #player {
   width: 45px;
   height: 60px;
+
   position: absolute;
+
   bottom: 12px;
   left: 50px;
-  z-index: 2;
+
+  z-index: 5;
+
+  pointer-events: none;
+
+  will-change: bottom;
 }
 
-/* Animação de Remada no chão */
+/* ===============================
+   ANIMAÇÃO DE REMADA
+   =============================== */
+
 .pushing .leg-push {
   animation: pushLeg 0.6s infinite ease-in-out;
   transform-origin: 36px 80px;
 }
 
 @keyframes pushLeg {
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(-35deg) translateY(5px); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform:
+      rotate(-35deg)
+      translateY(5px);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
-/* Animação de Flip no Skate ao pular */
+/* ===============================
+   ANIMAÇÃO DO SKATE
+   =============================== */
+
 .jumping .skate-deck {
   animation: flipSkate 0.6s ease-in-out;
   transform-origin: 48px 117px;
 }
 
 @keyframes flipSkate {
-  0% { transform: rotateX(0deg); }
-  100% { transform: rotateX(360deg); }
+  0% {
+    transform: rotateX(0deg);
+  }
+
+  100% {
+    transform: rotateX(360deg);
+  }
 }
+
+/* ===============================
+   OBSTÁCULOS
+   =============================== */
 
 .obstacle {
   position: absolute;
+
   bottom: 12px;
-  z-index: 2;
+
+  width: 40px;
+  height: 55px;
+
+  z-index: 4;
+
   display: flex;
   align-items: flex-end;
   justify-content: center;
+
+  will-change: left;
+
+  pointer-events: none;
 }
+
+.obstacle svg {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* ===============================
+   PÁSSAROS
+   =============================== */
 
 .bird {
   position: absolute;
+
   top: 25px;
+
   width: 30px;
   height: 20px;
-  z-index: 2;
+
+  z-index: 4;
+
+  will-change: left;
+
+  pointer-events: none;
 }
+
+.bird svg {
+  display: block;
+
+  width: 30px;
+  height: 20px;
+}
+
+/* ===============================
+   PLACAR
+   =============================== */
 
 #score-board {
   margin-top: 15px;
+
   font-size: 20px;
   font-weight: bold;
+
+  color: #fff;
+
+  text-shadow:
+    2px 2px 3px rgba(0, 0, 0, 0.5);
 }
+
+/* ===============================
+   GAME OVER
+   =============================== */
 
 #game-over-screen {
   display: none;
+
   position: absolute;
+
   top: 0;
   left: 0;
+
   width: 100%;
   height: 100%;
+
   background: rgba(0, 0, 0, 0.7);
+
   color: white;
+
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   font-size: 26px;
-  z-index: 10;
   font-weight: bold;
+
+  text-align: center;
+
+  z-index: 10;
+
+  cursor: pointer;
+}
+
+/* ===============================
+   RESPONSIVO - CELULAR
+   =============================== */
+
+@media (max-width: 650px) {
+  #game-container {
+    width: 95vw;
+    max-width: 600px;
+  }
+}
+
+@media (max-height: 500px) {
+  body {
+    justify-content: flex-start;
+    padding-top: 20px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  p {
+    margin-bottom: 8px;
+  }
+
+  #score-board {
+    margin-top: 8px;
+  }
 }
