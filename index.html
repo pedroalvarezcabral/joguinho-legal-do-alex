@@ -2,27 +2,1289 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Skate Runner</title>
-  <link rel="stylesheet" href="style.css">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Skater Run</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #1a1a2e;
+      font-family: Arial, sans-serif;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 100vh;
+
+      color: white;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      font-size: 30px;
+    }
+
+    p {
+      margin-bottom: 15px;
+      color: #a0a0b0;
+      text-align: center;
+    }
+
+    #game-container {
+      width: 600px;
+      height: 220px;
+
+      position: relative;
+      overflow: hidden;
+
+      border-bottom: 6px solid #111;
+      border-radius: 8px 8px 0 0;
+
+      box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.7);
+
+      touch-action: none;
+
+      background: #64b5f6;
+    }
+
+    /* =========================
+       CIDADE
+       ========================= */
+
+    #background-city {
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
+
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='220' viewBox='0 0 600 220'><rect width='600' height='90' fill='%2364b5f6'/><rect y='60' width='80' height='30' fill='%23b0bec5'/><rect x='100' y='40' width='70' height='50' fill='%23cfd8dc'/><rect x='190' y='50' width='90' height='40' fill='%2390a4ae'/><rect x='300' y='30' width='80' height='60' fill='%23eceff1'/><rect x='400' y='50' width='60' height='40' fill='%23b0bec5'/><rect x='480' y='35' width='100' height='55' fill='%23cfd8dc'/><line x1='0' y1='90' x2='600' y2='90' stroke='%2337474f' stroke-width='3'/><rect y='90' width='600' height='85' fill='%23546e7a'/><path d='M30 110 Q50 140 80 120 T130 150' stroke='%2390caf9' stroke-width='4' fill='none'/><path d='M160 125 C190 100 220 160 260 130' stroke='%23e0e0e0' stroke-width='8' fill='none' opacity='.6'/><path d='M300 115 Q340 150 390 120' stroke='%2390caf9' stroke-width='5' fill='none'/><path d='M420 130 Q460 100 510 140' stroke='%23e0e0e0' stroke-width='6' fill='none' opacity='.6'/><rect y='175' width='600' height='45' fill='%23263238'/><line x1='0' y1='200' x2='600' y2='200' stroke='white' stroke-width='3' stroke-dasharray='40 30'/><line x1='50' y1='90' x2='50' y2='175' stroke='%23212121' stroke-width='4'/><path d='M35 90 L50 100 L65 90' stroke='%23212121' stroke-width='3' fill='none'/><line x1='400' y1='90' x2='400' y2='175' stroke='%23212121' stroke-width='4'/><path d='M385 90 L400 100 L415 90' stroke='%23212121' stroke-width='3' fill='none'/></svg>");
+
+      background-repeat: repeat-x;
+      background-size: 600px 220px;
+      background-position: 0 0;
+
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* =========================
+       JOGADOR
+       ========================= */
+
+    #player {
+      position: absolute;
+
+      width: 45px;
+      height: 60px;
+
+      left: 50px;
+      bottom: 12px;
+
+      z-index: 5;
+
+      pointer-events: none;
+    }
+
+    /* =========================
+       REMADA
+       ========================= */
+
+    .pushing .leg-push {
+      animation:
+        pushLeg 0.6s infinite ease-in-out;
+
+      transform-origin: 36px 80px;
+    }
+
+    @keyframes pushLeg {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      50% {
+        transform:
+          rotate(-35deg)
+          translateY(5px);
+      }
+
+      100% {
+        transform: rotate(0deg);
+      }
+    }
+
+    /* =========================
+       FLIP
+       ========================= */
+
+    .jumping .skate-deck {
+      animation:
+        flipSkate 0.6s ease-in-out;
+
+      transform-origin: 48px 117px;
+    }
+
+    @keyframes flipSkate {
+      0% {
+        transform: rotateX(0deg);
+      }
+
+      100% {
+        transform: rotateX(360deg);
+      }
+    }
+
+    /* =========================
+       OBSTÁCULOS
+       ========================= */
+
+    .obstacle {
+      position: absolute;
+
+      bottom: 12px;
+
+      width: 40px;
+      height: 55px;
+
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+
+      z-index: 4;
+
+      pointer-events: none;
+    }
+
+    .obstacle svg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* =========================
+       PÁSSAROS
+       ========================= */
+
+    .bird {
+      position: absolute;
+
+      top: 25px;
+
+      width: 30px;
+      height: 20px;
+
+      z-index: 4;
+
+      pointer-events: none;
+    }
+
+    .bird svg {
+      width: 30px;
+      height: 20px;
+    }
+
+    /* =========================
+       PLACAR
+       ========================= */
+
+    #score-board {
+      margin-top: 15px;
+
+      font-size: 20px;
+      font-weight: bold;
+
+      color: white;
+
+      text-shadow:
+        2px 2px 3px rgba(0, 0, 0, .5);
+    }
+
+    /* =========================
+       GAME OVER
+       ========================= */
+
+    #game-over-screen {
+      display: none;
+
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
+
+      background:
+        rgba(0, 0, 0, .72);
+
+      color: white;
+
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+
+      font-size: 26px;
+      font-weight: bold;
+
+      z-index: 20;
+
+      cursor: pointer;
+    }
+
+    #game-over-screen small {
+      margin-top: 12px;
+      font-size: 15px;
+      color: #ddd;
+    }
+
+    /* =========================
+       CELULAR
+       ========================= */
+
+    @media (max-width: 650px) {
+      body {
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      #game-container {
+        width: 95vw;
+        height: 220px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-  <h1>Skate Runner 🛹</h1>
-  <p>Pressione <b>Barra de Espaço</b> ou toque na tela para pular!</p>
+  <h1>🛹 Skater Run</h1>
+
+  <p>
+    Pressione ESPAÇO ou toque na tela para pular
+  </p>
 
   <div id="game-container">
+
     <div id="background-city"></div>
+
     <div id="player"></div>
-    
+
     <div id="game-over-screen">
-      <div>GAME OVER</div>
-      <div style="font-size: 14px; margin-top: 10px;">Pressione Espaço para reiniciar</div>
+      GAME OVER
+      <small>
+        Pressione ESPAÇO ou toque para jogar novamente
+      </small>
     </div>
+
   </div>
 
-  <div id="score-board">Pontuação: <span id="score">0</span></div>
+  <div id="score-board">
+    Pontos: <span id="score">0</span>
+  </div>
 
-  <script src="script.js"></script>
+
+  <script>
+
+    // ==========================================
+    // ELEMENTOS
+    // ==========================================
+
+    const player =
+      document.getElementById('player');
+
+    const container =
+      document.getElementById('game-container');
+
+    const scoreElement =
+      document.getElementById('score');
+
+    const gameOverScreen =
+      document.getElementById('game-over-screen');
+
+    const backgroundCity =
+      document.getElementById('background-city');
+
+
+    // ==========================================
+    // VARIÁVEIS
+    // ==========================================
+
+    let isJumping = false;
+    let isGameOver = false;
+
+    let score = 0;
+
+    let gameSpeed = 5;
+
+    let playerBottom = 12;
+
+    let gravity = 0.9;
+
+    let velocityY = 0;
+
+    let obstacles = [];
+
+    let birds = [];
+
+    let bgX = 0;
+
+    let obstacleTimer = null;
+
+    let birdTimer = null;
+
+    let animationFrame = null;
+
+
+    // ==========================================
+    // SKATISTA
+    // ==========================================
+
+    const skaterSVG = `
+
+      <svg
+        width="45"
+        height="60"
+        viewBox="0 0 100 130"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+
+        <path
+          d="M30 25 C30 10 65 10 65 25Z"
+          fill="#E74C3C"
+        />
+
+        <path
+          d="M20 25 L45 23"
+          stroke="#E74C3C"
+          stroke-width="5"
+          stroke-linecap="round"
+        />
+
+        <circle
+          cx="50"
+          cy="30"
+          r="14"
+          fill="#F39C12"
+        />
+
+        <circle
+          cx="48"
+          cy="32"
+          r="12"
+          fill="#F5CBA7"
+        />
+
+        <circle
+          cx="42"
+          cy="32"
+          r="2"
+          fill="#000"
+        />
+
+        <path
+          d="M32 44 L64 44 L60 80 L36 80Z"
+          fill="#2980B9"
+        />
+
+        <path
+          d="M34 48 L15 60"
+          stroke="#F5CBA7"
+          stroke-width="6"
+          stroke-linecap="round"
+        />
+
+        <path
+          d="M62 48 L80 55"
+          stroke="#F5CBA7"
+          stroke-width="6"
+          stroke-linecap="round"
+        />
+
+        <path
+          d="M60 80 L68 108"
+          stroke="#34495E"
+          stroke-width="8"
+          stroke-linecap="round"
+        />
+
+        <ellipse
+          cx="73"
+          cy="110"
+          rx="8"
+          ry="4"
+          fill="#ECF0F1"
+        />
+
+        <g class="leg-push">
+
+          <path
+            d="M36 80 L28 108"
+            stroke="#34495E"
+            stroke-width="8"
+            stroke-linecap="round"
+          />
+
+          <ellipse
+            cx="23"
+            cy="110"
+            rx="8"
+            ry="4"
+            fill="#ECF0F1"
+          />
+
+        </g>
+
+        <g class="skate-deck">
+
+          <rect
+            x="5"
+            y="114"
+            width="86"
+            height="7"
+            rx="3"
+            fill="#27AE60"
+          />
+
+          <circle
+            cx="20"
+            cy="124"
+            r="5"
+            fill="#34495E"
+          />
+
+          <circle
+            cx="76"
+            cy="124"
+            r="5"
+            fill="#34495E"
+          />
+
+        </g>
+
+      </svg>
+
+    `;
+
+
+    // ==========================================
+    // CONE
+    // ==========================================
+
+    const coneSVG = `
+
+      <svg
+        width="32"
+        height="42"
+        viewBox="0 0 80 100"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+
+        <rect
+          x="5"
+          y="85"
+          width="70"
+          height="12"
+          rx="2"
+          fill="#D35400"
+        />
+
+        <path
+          d="M15 85 L32 10 L48 10 L65 85Z"
+          fill="#E67E22"
+        />
+
+        <path
+          d="M23 60 L28 42 L52 42 L57 60Z"
+          fill="#ECF0F1"
+        />
+
+        <path
+          d="M29 38 L33 25 L47 25 L51 38Z"
+          fill="#ECF0F1"
+        />
+
+      </svg>
+
+    `;
+
+
+    // ==========================================
+    // VELHINHA
+    // ==========================================
+
+    const velhinhaSVG = `
+
+      <svg
+        width="40"
+        height="55"
+        viewBox="0 0 100 140"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+
+        <circle
+          cx="50"
+          cy="35"
+          r="26"
+          fill="#BDC3C7"
+        />
+
+        <circle
+          cx="50"
+          cy="45"
+          r="18"
+          fill="#F5CBA7"
+        />
+
+        <path
+          d="M38 38 L48 44"
+          stroke="#4A2E18"
+          stroke-width="3.5"
+          stroke-linecap="round"
+        />
+
+        <path
+          d="M62 38 L52 44"
+          stroke="#4A2E18"
+          stroke-width="3.5"
+          stroke-linecap="round"
+        />
+
+        <circle
+          cx="43"
+          cy="45"
+          r="2"
+          fill="#000"
+        />
+
+        <circle
+          cx="57"
+          cy="45"
+          r="2"
+          fill="#000"
+        />
+
+        <path
+          d="M30 20 L36 26 M36 20 L30 26"
+          stroke="#E74C3C"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+
+        <path
+          d="M42 56 Q50 50 58 56"
+          stroke="#000"
+          stroke-width="3"
+          fill="none"
+          stroke-linecap="round"
+        />
+
+        <path
+          d="M72 65 L85 125"
+          stroke="#6D4C41"
+          stroke-width="5"
+          stroke-linecap="round"
+        />
+
+        <path
+          d="M72 65 C72 55 82 55 82 65"
+          stroke="#6D4C41"
+          stroke-width="5"
+          fill="none"
+          stroke-linecap="round"
+        />
+
+        <path
+          d="M35 65 L65 65 L70 115 L30 115Z"
+          fill="#8E44AD"
+        />
+
+        <path
+          d="M35 70 L20 85"
+          stroke="#F5CBA7"
+          stroke-width="6"
+          stroke-linecap="round"
+        />
+
+        <path
+          d="M65 70 L78 75"
+          stroke="#F5CBA7"
+          stroke-width="6"
+          stroke-linecap="round"
+        />
+
+        <ellipse
+          cx="40"
+          cy="120"
+          rx="8"
+          ry="5"
+          fill="#2C3E50"
+        />
+
+        <ellipse
+          cx="60"
+          cy="120"
+          rx="8"
+          ry="5"
+          fill="#2C3E50"
+        />
+
+      </svg>
+
+    `;
+
+
+    // ==========================================
+    // PÁSSARO
+    // ==========================================
+
+    const birdSVG = `
+
+      <svg
+        width="30"
+        height="20"
+        viewBox="0 0 60 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+
+        <path
+          d="M5 20 Q20 5 35 20 Q50 5 58 20"
+          stroke="#2C3E50"
+          stroke-width="4"
+          stroke-linecap="round"
+          fill="none"
+        />
+
+      </svg>
+
+    `;
+
+
+    // ==========================================
+    // INICIA PLAYER
+    // ==========================================
+
+    player.innerHTML = skaterSVG;
+
+    player.classList.add('pushing');
+
+
+    // ==========================================
+    // TECLADO
+    // ==========================================
+
+    document.addEventListener('keydown', function(e) {
+
+      if (e.code !== 'Space') return;
+
+      e.preventDefault();
+
+      if (isGameOver) {
+
+        restartGame();
+
+      } else {
+
+        jump();
+
+      }
+
+    });
+
+
+    // ==========================================
+    // TOQUE
+    // ==========================================
+
+    container.addEventListener(
+      'touchstart',
+      function(e) {
+
+        e.preventDefault();
+
+        if (isGameOver) {
+
+          restartGame();
+
+        } else {
+
+          jump();
+
+        }
+
+      },
+      { passive: false }
+    );
+
+
+    // ==========================================
+    // MOUSE
+    // ==========================================
+
+    container.addEventListener(
+      'pointerdown',
+      function(e) {
+
+        if (e.pointerType === 'touch') return;
+
+        if (isGameOver) {
+
+          restartGame();
+
+        } else {
+
+          jump();
+
+        }
+
+      }
+    );
+
+
+    // ==========================================
+    // PULO
+    // ==========================================
+
+    function jump() {
+
+      if (isGameOver) return;
+
+      if (isJumping) return;
+
+      isJumping = true;
+
+      velocityY = 12.5;
+
+      player.classList.remove('pushing');
+
+      player.classList.add('jumping');
+
+    }
+
+
+    // ==========================================
+    // CRIAR OBSTÁCULO
+    // ==========================================
+
+    function createObstacle() {
+
+      if (isGameOver) return;
+
+      const last =
+        obstacles[obstacles.length - 1];
+
+      if (
+        !last ||
+        container.clientWidth - last.left >= 300
+      ) {
+
+        const obstacle =
+          document.createElement('div');
+
+        obstacle.className =
+          'obstacle';
+
+        const isVelhinha =
+          Math.random() > 0.5;
+
+        obstacle.innerHTML =
+          isVelhinha
+            ? velhinhaSVG
+            : coneSVG;
+
+        const startX =
+          container.clientWidth;
+
+        obstacle.style.left =
+          startX + 'px';
+
+        container.appendChild(obstacle);
+
+        obstacles.push({
+
+          element: obstacle,
+
+          left: startX
+
+        });
+
+      }
+
+      const delay =
+        Math.random() * 1200 + 1500;
+
+      obstacleTimer =
+        setTimeout(
+          createObstacle,
+          delay
+        );
+
+    }
+
+
+    // ==========================================
+    // CRIAR PÁSSARO
+    // ==========================================
+
+    function createBird() {
+
+      if (isGameOver) return;
+
+      const bird =
+        document.createElement('div');
+
+      bird.className =
+        'bird';
+
+      bird.innerHTML =
+        birdSVG;
+
+      const startX =
+        container.clientWidth;
+
+      bird.style.left =
+        startX + 'px';
+
+      container.appendChild(bird);
+
+      birds.push({
+
+        element: bird,
+
+        left: startX
+
+      });
+
+      const delay =
+        Math.random() * 8000 + 7000;
+
+      birdTimer =
+        setTimeout(
+          createBird,
+          delay
+        );
+
+    }
+
+
+    // ==========================================
+    // COLISÃO
+    // ==========================================
+
+    function checkCollision(
+      a,
+      b
+    ) {
+
+      if (!a || !b) {
+        return false;
+      }
+
+      const r1 =
+        a.getBoundingClientRect();
+
+      const r2 =
+        b.getBoundingClientRect();
+
+      const margin = 5;
+
+      return (
+
+        r1.left + margin <
+        r2.right - margin
+
+        &&
+
+        r1.right - margin >
+        r2.left + margin
+
+        &&
+
+        r1.top + margin <
+        r2.bottom - margin
+
+        &&
+
+        r1.bottom - margin >
+        r2.top + margin
+
+      );
+
+    }
+
+
+    // ==========================================
+    // LOOP DO JOGO
+    // ==========================================
+
+    function updateGame() {
+
+      if (isGameOver) return;
+
+
+      // Fundo
+      bgX -= gameSpeed * 0.5;
+
+      backgroundCity.style
+        .backgroundPositionX =
+        bgX + 'px';
+
+
+      // Física
+      if (isJumping) {
+
+        playerBottom += velocityY;
+
+        velocityY -= gravity;
+
+
+        if (playerBottom <= 12) {
+
+          playerBottom = 12;
+
+          velocityY = 0;
+
+          isJumping = false;
+
+          player.classList
+            .remove('jumping');
+
+          player.classList
+            .add('pushing');
+
+        }
+
+        player.style.bottom =
+          playerBottom + 'px';
+
+      }
+
+
+      // Obstáculos
+      for (
+        let i = obstacles.length - 1;
+        i >= 0;
+        i--
+      ) {
+
+        const obstacle =
+          obstacles[i];
+
+        obstacle.left -=
+          gameSpeed;
+
+        obstacle.element.style.left =
+          obstacle.left + 'px';
+
+
+        if (
+          checkCollision(
+            player,
+            obstacle.element
+          )
+        ) {
+
+          endGame();
+
+          return;
+
+        }
+
+
+        if (obstacle.left < -100) {
+
+          obstacle.element.remove();
+
+          obstacles.splice(i, 1);
+
+          score += 10;
+
+          scoreElement.textContent =
+            score;
+
+          // Aumenta gradualmente
+          if (score >= 200) {
+
+            gameSpeed =
+              5 +
+              Math.floor(
+                (score - 200) / 50
+              ) * 0.4;
+
+          }
+
+        }
+
+      }
+
+
+      // Pássaros
+      for (
+        let i = birds.length - 1;
+        i >= 0;
+        i--
+      ) {
+
+        const bird =
+          birds[i];
+
+        bird.left -=
+          gameSpeed * 0.7;
+
+        bird.element.style.left =
+          bird.left + 'px';
+
+
+        if (
+          checkCollision(
+            player,
+            bird.element
+          )
+        ) {
+
+          endGame();
+
+          return;
+
+        }
+
+
+        if (bird.left < -100) {
+
+          bird.element.remove();
+
+          birds.splice(i, 1);
+
+        }
+
+      }
+
+
+      animationFrame =
+        requestAnimationFrame(
+          updateGame
+        );
+
+    }
+
+
+    // ==========================================
+    // GAME OVER
+    // ==========================================
+
+    function endGame() {
+
+      if (isGameOver) return;
+
+      isGameOver = true;
+
+
+      clearTimeout(
+        obstacleTimer
+      );
+
+      clearTimeout(
+        birdTimer
+      );
+
+
+      obstacleTimer = null;
+
+      birdTimer = null;
+
+
+      if (
+        animationFrame !== null
+      ) {
+
+        cancelAnimationFrame(
+          animationFrame
+        );
+
+        animationFrame = null;
+
+      }
+
+
+      player.classList.remove(
+        'pushing',
+        'jumping'
+      );
+
+
+      gameOverScreen.style.display =
+        'flex';
+
+    }
+
+
+    // ==========================================
+    // REINICIAR
+    // ==========================================
+
+    function restartGame() {
+
+      clearTimeout(
+        obstacleTimer
+      );
+
+      clearTimeout(
+        birdTimer
+      );
+
+
+      obstacleTimer = null;
+
+      birdTimer = null;
+
+
+      if (
+        animationFrame !== null
+      ) {
+
+        cancelAnimationFrame(
+          animationFrame
+        );
+
+        animationFrame = null;
+
+      }
+
+
+      // Limpa obstáculos
+      obstacles.forEach(
+        function(obstacle) {
+
+          if (obstacle.element) {
+
+            obstacle.element.remove();
+
+          }
+
+        }
+      );
+
+
+      // Limpa pássaros
+      birds.forEach(
+        function(bird) {
+
+          if (bird.element) {
+
+            bird.element.remove();
+
+          }
+
+        }
+      );
+
+
+      obstacles = [];
+
+      birds = [];
+
+
+      // Reset
+      score = 0;
+
+      gameSpeed = 5;
+
+      playerBottom = 12;
+
+      velocityY = 0;
+
+      isJumping = false;
+
+      isGameOver = false;
+
+      bgX = 0;
+
+
+      // Interface
+      scoreElement.textContent =
+        '0';
+
+      player.style.bottom =
+        '12px';
+
+      player.classList.remove(
+        'jumping'
+      );
+
+      player.classList.add(
+        'pushing'
+      );
+
+
+      gameOverScreen.style.display =
+        'none';
+
+
+      backgroundCity.style
+        .backgroundPositionX =
+        '0px';
+
+
+      // Começa novamente
+      createObstacle();
+
+
+      birdTimer =
+        setTimeout(
+          createBird,
+          3000
+        );
+
+
+      updateGame();
+
+    }
+
+
+    // ==========================================
+    // INÍCIO
+    // ==========================================
+
+    createObstacle();
+
+    birdTimer =
+      setTimeout(
+        createBird,
+        3000
+      );
+
+    updateGame();
+
+  </script>
+
 </body>
 </html>
